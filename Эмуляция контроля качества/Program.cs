@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using Эмуляция_контроля_качества.Classes;
 
 namespace Эмуляция_контроля_качества
 {
@@ -6,7 +8,10 @@ namespace Эмуляция_контроля_качества
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            //Work work = new Work();
+
+            //Thread thread = new Thread(work.StartWork);
+            //thread.Start();
         }
     }
 }

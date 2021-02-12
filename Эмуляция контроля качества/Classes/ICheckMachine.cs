@@ -6,7 +6,7 @@ namespace Эмуляция_контроля_качества.Classes
 {
     interface ICheckMachine
     {
-        bool Check(IDetail detail);
+        bool CheckDetail(IDetail detail);
         void Transit();
         void Utilize();
 

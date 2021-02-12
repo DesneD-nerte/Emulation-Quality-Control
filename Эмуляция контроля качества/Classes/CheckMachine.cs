@@ -15,7 +15,7 @@ namespace Эмуляция_контроля_качества.Classes
 
         //IDetail wheelExample = new Wheel(10, 4, 10);
 
-        public bool Check(IDetail detail)
+        public bool CheckDetail(IDetail detail)
         {
             IDetail exampleDetail = null;
 

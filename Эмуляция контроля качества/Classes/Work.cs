@@ -11,9 +11,22 @@ namespace Эмуляция_контроля_качества.Classes
 
         public void StartWork()
         {
-            while(true)
+            Ititialize();
+
+            while (true)
             {
-                machine.Start();
+                IDetail detail = machine.GetDetail();
+
+                bool CheckedDetail = checkMachine.CheckDetail(detail);
+
+                if(CheckedDetail == true)
+                {
+                    Console.WriteLine("OK");
+                }
+                else
+                {
+                    Console.WriteLine("Trash");
+                }
             }
         }
 

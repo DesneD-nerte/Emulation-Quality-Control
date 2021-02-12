@@ -28,9 +28,11 @@ namespace Эмуляция_контроля_качества.Classes
             return details[Number];
         }
 
-        public void Start()
+        public IDetail GetDetail()
         {
-            CreateDetail();
+            IDetail detail = CreateDetail();
+
+            return detail;
         }
 
         public void Stop()
