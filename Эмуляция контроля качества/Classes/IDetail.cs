@@ -6,10 +6,8 @@ namespace Эмуляция_контроля_качества.Classes
 {
     interface IDetail
     {
-        int Height { get; }
-        int Width { get; }
-        int Length { get; }
-
-
+        double Height { get; }
+        double Width { get; }
+        double Length { get; }
     }
 }

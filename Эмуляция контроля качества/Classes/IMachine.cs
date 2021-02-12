@@ -6,10 +6,9 @@ namespace Эмуляция_контроля_качества.Classes
 {
     interface IMachine
     {
-        void Start();       // метод для запуска
-        void Stop();        // метод для остановки
-        IDetail CreateDetail();// создание детали
-        int Weight { get; } // масса станка 
-        int Speed { get; }  // скорость станка
+        void Start();           // метод для запуска
+        void Stop();            // метод для остановки
+        //IDetail CreateDetail(); // создание детали
+        int Performance { get; }// производительность станка
     }
 }

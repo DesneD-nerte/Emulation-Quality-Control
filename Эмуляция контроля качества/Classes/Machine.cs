@@ -6,23 +6,31 @@ namespace Эмуляция_контроля_качества.Classes
 {
     class Machine : IMachine
     {
-        public int Weight { get; }
+        Random rnd = new Random();
+        public int Performance { get; }
 
-        public int Speed { get; }
-
-        public Machine ()
+        public Machine (int performance)
         {
-
+            this.Performance = performance;
         }
 
-        public IDetail CreateDetail()
+        private IDetail CreateDetail()//Cтоит как-то использовать "Performance", чтобы получать фигуру один раз в определенное время
         {
-            throw new NotImplementedException();
+            IDetail bolt = new Bolt();
+            IDetail nail = new Nail();
+            IDetail screw = new Screw();
+            IDetail wheel = new Wheel();
+
+            IDetail[] details = new IDetail[] { bolt, nail, screw, wheel };
+
+            int Number = rnd.Next(4);
+
+            return details[Number];
         }
 
         public void Start()
         {
-            throw new NotImplementedException();
+            CreateDetail();
         }
 
         public void Stop()
