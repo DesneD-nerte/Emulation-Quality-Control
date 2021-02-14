@@ -16,16 +16,16 @@ namespace Эмуляция_контроля_качества.Classes
 
         private IDetail CreateDetail()//Cтоит как-то использовать "Performance", чтобы получать фигуру один раз в определенное время
         {
-            IDetail bolt = new Bolt();
+            IDetail bolt = CreateBolt();
             IDetail nail = new Nail();
             IDetail screw = new Screw();
             IDetail wheel = new Wheel();
 
             IDetail[] details = new IDetail[] { bolt, nail, screw, wheel };
 
-            int Number = rnd.Next(4);
+            int index = rnd.Next(4);
 
-            return details[Number];
+            return details[index];
         }
 
         public IDetail GetDetail()
@@ -34,6 +34,41 @@ namespace Эмуляция_контроля_качества.Classes
 
             return detail;
         }
+
+
+        private Bolt CreateBolt()
+        {
+            Bolt bolt = new Bolt();
+
+
+            return bolt;
+        }
+
+        private Bolt CreateNail()
+        {
+            Bolt nail = new Bolt();
+
+
+            return bolt;
+        }
+
+        private Bolt CreateScrew()
+        {
+            Bolt screw = new Bolt();
+
+
+            return bolt;
+        }
+
+        private Bolt CreateWheel()
+        {
+            Bolt wheel = new Bolt();
+
+
+            return bolt;
+        }
+
+
 
         public void Stop()
         {

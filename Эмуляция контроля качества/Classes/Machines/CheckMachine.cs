@@ -42,6 +42,7 @@ namespace Эмуляция_контроля_качества.Classes
             {
                 return true;
             }
+
             return false;
         }
 

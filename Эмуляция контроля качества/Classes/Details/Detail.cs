@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Эмуляция_контроля_качества.Classes
 {
-    class Detail 
+    class Detail :
     {
 
         public Detail(int height, int weight)

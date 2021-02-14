@@ -8,6 +8,12 @@ namespace Эмуляция_контроля_качества.Classes
     {
         ICheckMachine checkMachine;
         IMachine machine;
+        IDisplay display;
+
+        public Work(IDisplay display)
+        {
+            this.display = display;
+        }
 
         public void StartWork()
         {
@@ -21,12 +27,14 @@ namespace Эмуляция_контроля_качества.Classes
 
                 if(CheckedDetail == true)
                 {
-                    Console.WriteLine("OK");
+                    display.WriteLine("OK");
                 }
                 else
                 {
-                    Console.WriteLine("Trash");
+                    display.WriteLine("Trash");
                 }
+
+                //display.WriteLine(CheckedDetail == true ? "Ok" : "Trash");
             }
         }
 
