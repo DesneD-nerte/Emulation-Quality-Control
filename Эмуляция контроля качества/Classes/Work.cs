@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace Эмуляция_контроля_качества.Classes
 {
@@ -9,6 +11,7 @@ namespace Эмуляция_контроля_качества.Classes
         ICheckMachine checkMachine;
         IMachine machine;
         IDisplay display;
+        int indexOfDetail;
 
         public Work(IDisplay display)
         {
@@ -18,23 +21,26 @@ namespace Эмуляция_контроля_качества.Classes
         public void StartWork()
         {
             Ititialize();
+            Stopwatch stopWatch = new Stopwatch();
 
             while (true)
             {
+                indexOfDetail++;
+                
                 IDetail detail = machine.GetDetail();
 
                 bool CheckedDetail = checkMachine.CheckDetail(detail);
 
-                if(CheckedDetail == true)
+                if (CheckedDetail == true)
                 {
-                    display.WriteLine("OK");
+                    display.WriteLine($"{detail} №{indexOfDetail} is fine");
                 }
                 else
                 {
-                    display.WriteLine("Trash");
+                    display.WriteLine($"{detail} №{indexOfDetail} is trash");
                 }
 
-                //display.WriteLine(CheckedDetail == true ? "Ok" : "Trash");
+                Thread.Sleep(1000);
             }
         }
 
@@ -43,6 +49,8 @@ namespace Эмуляция_контроля_качества.Classes
             machine = new Machine(1);
 
             checkMachine = new CheckMachine();
+
+            indexOfDetail = 0;
         }
     }
 }

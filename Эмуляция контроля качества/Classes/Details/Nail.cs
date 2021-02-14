@@ -4,12 +4,8 @@ using System.Text;
 
 namespace Эмуляция_контроля_качества.Classes
 {
-    class Nail : IDetail
+    class Nail : Detail
     {
-        public double Height { get; }
-        public double Width { get; }
-        public double Length { get; }
-
         public Nail(double height, double width, double length)
         {
             this.Height = height;

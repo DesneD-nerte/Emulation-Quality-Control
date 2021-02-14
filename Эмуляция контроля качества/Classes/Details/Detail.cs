@@ -4,18 +4,15 @@ using System.Text;
 
 namespace Эмуляция_контроля_качества.Classes
 {
-    class Detail :
+    class Detail : IDetail
     {
+        public double Height { get; internal set; }
+        public double Width { get; internal set; }
+        public double Length { get; internal set; }
 
-        public Detail(int height, int weight)
+        public override string ToString()
         {
-            //this.Height = height;
-            //this.Weight = weight;
-        }
-
-        public Detail()
-        {
-            
+            return base.ToString();
         }
     }
 }

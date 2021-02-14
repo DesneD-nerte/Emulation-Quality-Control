@@ -17,16 +17,11 @@ namespace Эмуляция_контроля_качества
             try
             {
                 thread.Start();
-                //work.StartWork();
             }
             catch(Exception ex)
             {
                 Console.WriteLine(new MyException(ex.Message));
             }
-
-            //Thread thread = new Thread(work.StartWork);
-            //thread.Start();
-
 
 
             //MyException myException = new MyException("wqe");
