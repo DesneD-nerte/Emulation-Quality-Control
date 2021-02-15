@@ -7,13 +7,7 @@ namespace Эмуляция_контроля_качества.Classes
 {
     class CheckMachine : ICheckMachine
     {
-        //IDetail boltExample = new Bolt(0.5, 0.5, 3);
-
-        //IDetail nailExample = new Nail(0.2, 0.3, 4);
-
-        //IDetail screwExample = new Screw(0.2, 0.3, 4);
-
-        //IDetail wheelExample = new Wheel(10, 4, 10);
+        public bool IsWork { get; private set; } = false;
 
         public bool CheckDetail(IDetail detail)
         {
@@ -44,6 +38,16 @@ namespace Эмуляция_контроля_качества.Classes
             }
 
             return false;
+        }
+
+        public void TurnOn()
+        {
+            IsWork = true;
+        }
+
+        public void TurnOff()
+        {
+            IsWork = false;
         }
 
         public void Transit()

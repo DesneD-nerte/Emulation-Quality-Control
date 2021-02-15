@@ -23,7 +23,7 @@ namespace Эмуляция_контроля_качества.Classes
             Ititialize();
             Stopwatch stopWatch = new Stopwatch();
 
-            while (true)
+            while (CheckWorkingIsTrue() == true)
             {
                 indexOfDetail++;
                 
@@ -44,11 +44,29 @@ namespace Эмуляция_контроля_качества.Classes
             }
         }
 
+        private bool CheckWorkingIsTrue()
+        {
+            if(machine.IsWork == true && checkMachine.IsWork == true)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void EndWork()
+        {
+            machine.TurnOff();
+            checkMachine.TurnOff();
+        }
+
         private void Ititialize()
         {
             machine = new Machine(1);
+            machine.TurnOn();
 
             checkMachine = new CheckMachine();
+            checkMachine.TurnOn();
 
             indexOfDetail = 0;
         }

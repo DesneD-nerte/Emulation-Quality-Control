@@ -9,6 +9,8 @@ namespace Эмуляция_контроля_качества.Classes
         Random rnd = new Random();
         public int Performance { get; }
 
+        public bool IsWork { get; private set; } = false;
+
         public Machine (int performance)
         {
             this.Performance = performance;
@@ -84,6 +86,15 @@ namespace Эмуляция_контроля_качества.Classes
             return createdDetail;
         }
 
+        public void TurnOn()
+        {
+            IsWork = true;
+        }
+
+        public void TurnOff()
+        {
+            IsWork = false;
+        }
 
         public void Stop()
         {
