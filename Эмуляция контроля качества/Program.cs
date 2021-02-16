@@ -11,7 +11,7 @@ namespace Эмуляция_контроля_качества
             IDisplay display = new ScreenDisplay();
 
             Work work = new Work(display);
-
+            
             Thread thread = new Thread(work.StartWork);
 
             try

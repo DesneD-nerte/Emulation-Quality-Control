@@ -65,7 +65,7 @@ namespace Эмуляция_контроля_качества.Classes
             machine = new Machine(1);
             machine.TurnOn();
 
-            checkMachine = new CheckMachine();
+            checkMachine = new CheckMachine(new ScreenDisplay());
             checkMachine.TurnOn();
 
             indexOfDetail = 0;

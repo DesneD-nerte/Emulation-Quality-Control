@@ -8,6 +8,17 @@ namespace Эмуляция_контроля_качества.Classes
     class CheckMachine : ICheckMachine
     {
         public bool IsWork { get; private set; } = false;
+        IDisplay display;
+
+        public CheckMachine(IDisplay display)
+        {
+            this.display = display;
+        }
+
+        public CheckMachine()
+        {
+            
+        }
 
         public bool CheckDetail(IDetail detail)
         {
@@ -30,7 +41,27 @@ namespace Эмуляция_контроля_качества.Classes
                 exampleDetail = new Wheel(10, 4, 10);
             }
 
-            if(detail.Height == exampleDetail.Height 
+            return DetailIsFine(exampleDetail, detail);
+        }
+
+        private bool DetailIsFine(IDetail exampleDetail, IDetail detail)
+        {
+            try
+            {
+                return CompareDetails(exampleDetail, detail);
+            }
+            catch (Exception ex)
+            {
+                display.WriteLine("Ошибка в ходе измерения детали:\n " + ex.Message);
+
+                return false;
+            }
+        }
+
+
+        private bool CompareDetails(IDetail exampleDetail, IDetail detail)
+        {
+            if (detail.Height == exampleDetail.Height
                 || detail.Width == exampleDetail.Width
                 || detail.Length == exampleDetail.Length)
             {
