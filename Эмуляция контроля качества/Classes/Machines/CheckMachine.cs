@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Эмуляция_контроля_качества.Classes.Details;
 
 namespace Эмуляция_контроля_качества.Classes
 {
@@ -9,10 +10,12 @@ namespace Эмуляция_контроля_качества.Classes
     {
         public bool IsWork { get; private set; } = false;
         IDisplay display;
+        CheckerContainer checkerContainer;
 
-        public CheckMachine(IDisplay display)
+        public CheckMachine(IDisplay display, CheckerContainer checkerContainer)
         {
             this.display = display;
+            this.checkerContainer = checkerContainer;
         }
 
         public CheckMachine()
@@ -20,28 +23,10 @@ namespace Эмуляция_контроля_качества.Classes
             
         }
 
+
         public bool CheckDetail(IDetail detail)
         {
-            IDetail exampleDetail = null;
-
-            if(detail is Bolt)
-            {
-                exampleDetail = new Bolt(0.5, 0.5, 3);
-            }
-            if (detail is Nail)
-            {
-                exampleDetail = new Nail(0.2, 0.3, 4);
-            }
-            if (detail is Screw)
-            {
-                exampleDetail = new Screw(0.2, 0.3, 4);
-            }
-            if (detail is Wheel)
-            {
-                exampleDetail = new Wheel(10, 4, 10);
-            }
-
-            return DetailIsFine(exampleDetail, detail);
+            return checkerContainer.CheckDetail(detail);
         }
 
         private bool DetailIsFine(IDetail exampleDetail, IDetail detail)

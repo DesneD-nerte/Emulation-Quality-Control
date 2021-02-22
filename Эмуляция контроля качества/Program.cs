@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Эмуляция_контроля_качества.Classes;
+using Эмуляция_контроля_качества.Classes.Details;
 
 namespace Эмуляция_контроля_качества
 {

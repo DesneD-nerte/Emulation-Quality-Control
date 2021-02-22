@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using Эмуляция_контроля_качества.Classes.Details;
 
 namespace Эмуляция_контроля_качества.Classes
 {
@@ -11,17 +12,18 @@ namespace Эмуляция_контроля_качества.Classes
         ICheckMachine checkMachine;
         IMachine machine;
         IDisplay display;
+        CheckerContainer checkerContainer;
         int indexOfDetail;
 
         public Work(IDisplay display)
         {
             this.display = display;
+            FullCheckerContainer();
         }
 
         public void StartWork()
         {
             Ititialize();
-            Stopwatch stopWatch = new Stopwatch();
 
             while (CheckWorkingIsTrue() == true)
             {
@@ -33,11 +35,11 @@ namespace Эмуляция_контроля_качества.Classes
 
                 if (CheckedDetail == true)
                 {
-                    display.WriteLine($"{detail} №{indexOfDetail} is fine");
+                    display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is fine");
                 }
                 else
                 {
-                    display.WriteLine($"{detail} №{indexOfDetail} is trash");
+                    display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is trash");
                 }
 
                 Thread.Sleep(1000);
@@ -62,13 +64,22 @@ namespace Эмуляция_контроля_качества.Classes
 
         private void Ititialize()
         {
-            machine = new Machine(1);
+            machine = new Machine(1, checkerContainer);
             machine.TurnOn();
 
-            checkMachine = new CheckMachine(new ScreenDisplay());
+            checkMachine = new CheckMachine(new ScreenDisplay(), checkerContainer);
             checkMachine.TurnOn();
 
             indexOfDetail = 0;
+        }
+
+        private void FullCheckerContainer()
+        {
+            checkerContainer = new CheckerContainer();
+            checkerContainer.Register(new Bolt().GetType(), new BoltChecker());
+            checkerContainer.Register(new Nail().GetType(), new NailChecker());
+            checkerContainer.Register(new Screw().GetType(), new ScrewChecker());
+            checkerContainer.Register(new Wheel().GetType(), new WheelChecker());
         }
     }
 }
