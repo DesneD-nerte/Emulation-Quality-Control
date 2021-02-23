@@ -40,6 +40,10 @@ namespace Эмуляция_контроля_качества.Classes
                 else
                 {
                     display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is trash");
+
+                    int[] lol = new int[0];
+
+                    lol[0] = 2;
                 }
 
                 Thread.Sleep(1000);
@@ -76,6 +80,7 @@ namespace Эмуляция_контроля_качества.Classes
         private void FullCheckerContainer()
         {
             checkerContainer = new CheckerContainer();
+
             checkerContainer.Register(new Bolt().GetType(), new BoltChecker());
             checkerContainer.Register(new Nail().GetType(), new NailChecker());
             checkerContainer.Register(new Screw().GetType(), new ScrewChecker());

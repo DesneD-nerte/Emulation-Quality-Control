@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using Эмуляция_контроля_качества.Classes;
 using Эмуляция_контроля_качества.Classes.Details;
@@ -12,17 +14,52 @@ namespace Эмуляция_контроля_качества
             IDisplay display = new ScreenDisplay();
 
             Work work = new Work(display);
-            
-            Thread thread = new Thread(work.StartWork);
 
+            StartProgramm(work);
+
+            //Метод позволяет выйти по нажатию клавиши, запускается во втором потоке
+            ExitProgramm(work);
+        }
+
+        static void StartProgramm(Work work)
+        {
             try
             {
-                thread.Start();
+                work.StartWork();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(new MyException(ex.Message));
+                Console.WriteLine("Произошла непридвиденная ошибка, требуется перезапуск!");
+
+                Console.WriteLine("1 - Перезапустить\n" +
+                                  "2 - Закрыть");
+
+                NextMoveAfterError(work);
             }
+        }
+
+        static void NextMoveAfterError(Work work)
+        {
+            string check;
+            do
+            {
+                check = Console.ReadLine();
+                if (check == "1")
+                {
+                    Console.Clear();
+                    StartProgramm(work);
+                }
+                if (check == "2")
+                {
+                    Environment.Exit(0);
+                }
+            }
+            while (check != "1" || check != "2");
+        }
+
+        static void ExitProgramm(Work work)
+        {
+            Thread thread = new Thread(work.EndWork);
 
             while (true)
             {
@@ -30,13 +67,10 @@ namespace Эмуляция_контроля_качества
 
                 if (key.Key == ConsoleKey.Escape || key.Key == ConsoleKey.Backspace)
                 {
-                    work.EndWork();
+                    thread.Start();
                     break;
                 }
             }
-
-            //MyException myException = new MyException("wqe");
-            //throw new MyException("LOL");
         }
 
     }
