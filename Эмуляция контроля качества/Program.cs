@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Эмуляция_контроля_качества.Classes;
 using Эмуляция_контроля_качества.Classes.Details;
 
@@ -16,12 +17,28 @@ namespace Эмуляция_контроля_качества
             Work work = new Work(display);
 
             StartProgramm(work);
-
-            //Метод позволяет выйти по нажатию клавиши, запускается во втором потоке
-            ExitProgramm(work);
         }
 
+
+        /// <summary>
+        /// Начало работы метода по выходу из программы происходит до начала прямой работы конвеера
+        /// сделано для того, чтобы он не успел перехватить управление главным потоком
+        /// </summary>
         static void StartProgramm(Work work)
+        {
+            Action<object> action = (object obj) =>
+            {
+                ExitProgramm(work);
+            };
+            Task stoppingTask = new Task(action, "Stopping");
+            stoppingTask.Start();
+
+            //Запуск основного метода 
+            StartWorking(work);
+        }
+
+
+        static void StartWorking(Work work)
         {
             try
             {
@@ -38,6 +55,7 @@ namespace Эмуляция_контроля_качества
             }
         }
 
+
         static void NextMoveAfterError(Work work)
         {
             string check;
@@ -47,7 +65,7 @@ namespace Эмуляция_контроля_качества
                 if (check == "1")
                 {
                     Console.Clear();
-                    StartProgramm(work);
+                    StartWorking(work);
                 }
                 if (check == "2")
                 {
@@ -57,9 +75,9 @@ namespace Эмуляция_контроля_качества
             while (check != "1" || check != "2");
         }
 
+
         static void ExitProgramm(Work work)
         {
-            Thread thread = new Thread(work.EndWork);
 
             while (true)
             {
@@ -67,7 +85,7 @@ namespace Эмуляция_контроля_качества
 
                 if (key.Key == ConsoleKey.Escape || key.Key == ConsoleKey.Backspace)
                 {
-                    thread.Start();
+                    work.EndWork();
                     break;
                 }
             }

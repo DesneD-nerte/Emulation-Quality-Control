@@ -28,25 +28,37 @@ namespace Эмуляция_контроля_качества.Classes
             while (CheckWorkingIsTrue() == true)
             {
                 indexOfDetail++;
-                
-                IDetail detail = machine.GetDetail();
 
-                bool CheckedDetail = checkMachine.CheckDetail(detail);
+                //IDetail detail = machine.GetDetail();
+                IDetail detail = null;
+                CheckDetail(detail);
 
-                if (CheckedDetail == true)
+                //IDetail detail1 = null;
+
+                //CheckDetail(detail1);
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void CheckDetail(IDetail detail)
+        {
+            try
+            {
+                bool checkedDetail = checkMachine.CheckDetail(detail);
+
+                if (checkedDetail == true)
                 {
                     display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is fine");
                 }
                 else
                 {
                     display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is trash");
-
-                    int[] lol = new int[0];
-
-                    lol[0] = 2;
                 }
-
-                Thread.Sleep(1000);
+            }
+            catch(NullReferenceException)
+            {
+                display.WriteLine("Detail is missing on the CheckMachine");
             }
         }
 
@@ -71,7 +83,7 @@ namespace Эмуляция_контроля_качества.Classes
             machine = new Machine(1, checkerContainer);
             machine.TurnOn();
 
-            checkMachine = new CheckMachine(new ScreenDisplay(), checkerContainer);
+            checkMachine = new CheckMachine(checkerContainer);
             checkMachine.TurnOn();
 
             indexOfDetail = 0;

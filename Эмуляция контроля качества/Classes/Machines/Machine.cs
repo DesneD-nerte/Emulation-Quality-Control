@@ -17,7 +17,8 @@ namespace Эмуляция_контроля_качества.Classes
             this.checkerContainer = checkerContainer;
         }
 
-        private IDetail CreateDetail()//Cтоит как-то использовать "Performance", чтобы получать фигуру один раз в определенное время
+        //TODO:Cтоит как-то использовать "Performance", чтобы получать фигуру один раз в определенное время
+        private IDetail CreateDetail()
         {
             IDetail bolt = new Bolt();
             IDetail nail = new Nail();

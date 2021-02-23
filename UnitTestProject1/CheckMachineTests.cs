@@ -7,7 +7,7 @@ using Эмуляция_контроля_качества.Classes;
 namespace UnitTestProject1
 {
     [TestClass]
-    public class UnitTest1
+    public class CheckMachineTests
     {
         [TestMethod]
         public void TestMethod1()
