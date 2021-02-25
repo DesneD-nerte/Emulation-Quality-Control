@@ -23,14 +23,22 @@ namespace Эмуляция_контроля_качества.Classes
             massiv[9] = detail;
         }
 
-        public void MoveDetails()//Перемещение деталей на 1 позицию
+        public void MoveDetails()
         {
             for (int i = 0; i < massiv.Length - 1; i++)
             {
-                massiv[i] = massiv[i + 1];
+                if (i % 2 == 1)//Перемещение по нечетным позициям
+                {
+                    massiv[i] = massiv[i + 2];
+                }
             }
 
             massiv[9] = null;
+        }
+
+        public IDetail GetCurrentDetail()
+        {
+            return massiv[1];
         }
     }
 }

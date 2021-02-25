@@ -9,6 +9,6 @@ namespace Эмуляция_контроля_качества.Classes
         public double Height { get; internal set; }
         public double Width { get; internal set; }
         public double Length { get; internal set; }
-
+        public int NumberOfDetail { get; set; }
     }
 }

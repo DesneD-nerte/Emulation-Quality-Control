@@ -13,7 +13,7 @@ namespace Эмуляция_контроля_качества.Classes
         IMachine machine;
         IDisplay display;
         CheckerContainer checkerContainer;
-        int indexOfDetail;
+        Conveyor conveyor = new Conveyor();
 
         public Work(IDisplay display, CheckerContainer checkerContainer)
         {
@@ -27,10 +27,14 @@ namespace Эмуляция_контроля_качества.Classes
 
             while (CheckWorkingIsTrue() == true)
             {
-                indexOfDetail++;
-
                 IDetail detail = machine.GetDetail();
-                CheckDetail(detail);
+                conveyor.PutDetailOn(detail);//Установка детали на конвеер
+                conveyor.MoveDetails();//Движение фигур на конвеере
+
+                if (conveyor.CheckConveyor() == true)
+                {
+                    CheckDetail(conveyor.GetCurrentDetail());
+                }
 
                 Thread.Sleep(1000);
             }
@@ -44,11 +48,11 @@ namespace Эмуляция_контроля_качества.Classes
 
                 if (checkedDetail == true)
                 {
-                    display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is fine");
+                    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is fine");
                 }
                 else
                 {
-                    display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is trash");
+                    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is trash");
                 }
             }
             catch (NullReferenceException ex)
@@ -81,9 +85,6 @@ namespace Эмуляция_контроля_качества.Classes
 
             checkMachine = new CheckMachine(checkerContainer);
             checkMachine.TurnOn();
-
-            indexOfDetail = 0;
         }
-
     }
 }

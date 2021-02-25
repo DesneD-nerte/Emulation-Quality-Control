@@ -7,8 +7,12 @@ namespace Эмуляция_контроля_качества.Classes
     class Machine : IMachine
     {
         Random rnd = new Random();
+        
         public int Performance { get; }
         public bool IsWork { get; private set; } = false;
+
+        int indexOfDetail;
+
         CheckerContainer checkerContainer;
 
         public Machine (int performance, CheckerContainer checkerContainer)
@@ -35,6 +39,9 @@ namespace Эмуляция_контроля_качества.Classes
         public IDetail GetDetail()
         {
             IDetail detail = CreateDetail();
+
+            indexOfDetail++;
+            detail.NumberOfDetail = indexOfDetail;
 
             return detail;
         }

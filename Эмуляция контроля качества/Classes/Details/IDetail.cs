@@ -9,5 +9,7 @@ namespace Эмуляция_контроля_качества.Classes
         double Height { get; }
         double Width { get; }
         double Length { get; }
+
+        int NumberOfDetail { get; set; }
     }
 }

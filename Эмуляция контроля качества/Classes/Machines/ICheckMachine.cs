@@ -8,10 +8,10 @@ namespace Эмуляция_контроля_качества.Classes
     {
         bool CheckDetail(IDetail detail);
         bool IsWork { get; }
-        void Transit();
-        void Utilize();
-
         void TurnOn();
         void TurnOff();
+
+        void Transit();
+        void Utilize();
     }
 }
