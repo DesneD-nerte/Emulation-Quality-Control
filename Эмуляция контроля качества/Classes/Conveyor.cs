@@ -6,13 +6,17 @@ namespace Эмуляция_контроля_качества.Classes
 {
     class Conveyor
     {
-        IDetail[] massiv = new IDetail[10];
+        public IDetail[] massiv = new IDetail[10];//!!!!!!!!!!
 
         public bool CheckConveyor()
         {
             if(massiv[0] == null && massiv[1] != null && massiv[2] == null)
             {
                 return true;
+            }
+            if(massiv[0] != null || massiv[2] != null)
+            {
+                throw new MyException("Вокруг требуемой позиции для проверки находятся препятствующие детали");
             }
 
             return false;

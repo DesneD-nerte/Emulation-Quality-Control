@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Эмуляция_контроля_качества.Classes;
 
-namespace UnitTestProject1
+namespace Tests
 {
     [TestClass]
     public class CheckMachineTests

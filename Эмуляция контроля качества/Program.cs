@@ -46,12 +46,21 @@ namespace Эмуляция_контроля_качества
             {
                 work.StartWork();
             }
-            catch (Exception)
+            catch(MyException ex)
             {
-                Console.WriteLine("Произошла непридвиденная ошибка, требуется перезапуск!");
+                Console.WriteLine(ex.Message);
 
-                Console.WriteLine("1 - Перезапустить\n" +
-                                  "2 - Закрыть");
+                NextMoveAfterError(work);
+            }
+            catch(NullReferenceException ex)
+            {
+                Console.WriteLine(ex.Message);
+                
+                NextMoveAfterError(work);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unnexpected error:\n" + ex.Message);                
 
                 NextMoveAfterError(work);
             }
@@ -60,6 +69,9 @@ namespace Эмуляция_контроля_качества
 
         static void NextMoveAfterError(Work work)
         {
+            Console.WriteLine("1 - Перезапустить\n" +
+                                  "2 - Закрыть");
+
             string check;
             do
             {

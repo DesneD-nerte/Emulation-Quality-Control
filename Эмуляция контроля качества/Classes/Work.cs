@@ -28,15 +28,29 @@ namespace Эмуляция_контроля_качества.Classes
             while (CheckWorkingIsTrue() == true)
             {
                 IDetail detail = machine.GetDetail();
+                //IDetail detail = null;
                 conveyor.PutDetailOn(detail);//Установка детали на конвеер
                 conveyor.MoveDetails();//Движение фигур на конвеере
+                //conveyor.massiv[0] = detail;
 
+                CheckConveyorAndDetail();
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void CheckConveyorAndDetail()
+        {
+            try
+            {
                 if (conveyor.CheckConveyor() == true)
                 {
                     CheckDetail(conveyor.GetCurrentDetail());
                 }
-
-                Thread.Sleep(1000);
+            }
+            catch(MyException ex)
+            {
+                throw ex;
             }
         }
 
@@ -57,8 +71,8 @@ namespace Эмуляция_контроля_качества.Classes
             }
             catch (NullReferenceException ex)
             {
-                throw new MyException("Wrong detail", ex);
-                //display.WriteLine("Detail is missing on the CheckMachine" + ex.Message);
+                throw new NullReferenceException("Detail is missing at the right conveyor position", ex);
+                //display.WriteLine("Detail is missing. " + ex.Message);
             }
         }
 
