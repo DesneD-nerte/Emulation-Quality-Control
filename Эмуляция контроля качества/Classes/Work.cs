@@ -15,10 +15,10 @@ namespace Эмуляция_контроля_качества.Classes
         CheckerContainer checkerContainer;
         int indexOfDetail;
 
-        public Work(IDisplay display)
+        public Work(IDisplay display, CheckerContainer checkerContainer)
         {
             this.display = display;
-            FullCheckerContainer();
+            this.checkerContainer = checkerContainer;
         }
 
         public void StartWork()
@@ -29,13 +29,8 @@ namespace Эмуляция_контроля_качества.Classes
             {
                 indexOfDetail++;
 
-                //IDetail detail = machine.GetDetail();
-                IDetail detail = null;
+                IDetail detail = machine.GetDetail();
                 CheckDetail(detail);
-
-                //IDetail detail1 = null;
-
-                //CheckDetail(detail1);
 
                 Thread.Sleep(1000);
             }
@@ -56,9 +51,10 @@ namespace Эмуляция_контроля_качества.Classes
                     display.WriteLine($"{detail.GetType().Name} №{indexOfDetail} is trash");
                 }
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException ex)
             {
-                display.WriteLine("Detail is missing on the CheckMachine");
+                throw new MyException("Wrong detail", ex);
+                //display.WriteLine("Detail is missing on the CheckMachine" + ex.Message);
             }
         }
 
@@ -89,14 +85,5 @@ namespace Эмуляция_контроля_качества.Classes
             indexOfDetail = 0;
         }
 
-        private void FullCheckerContainer()
-        {
-            checkerContainer = new CheckerContainer();
-
-            checkerContainer.Register(new Bolt().GetType(), new BoltChecker());
-            checkerContainer.Register(new Nail().GetType(), new NailChecker());
-            checkerContainer.Register(new Screw().GetType(), new ScrewChecker());
-            checkerContainer.Register(new Wheel().GetType(), new WheelChecker());
-        }
     }
 }

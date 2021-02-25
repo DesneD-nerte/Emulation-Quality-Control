@@ -14,7 +14,9 @@ namespace Эмуляция_контроля_качества
         {
             IDisplay display = new ScreenDisplay();
 
-            Work work = new Work(display);
+            CheckerContainer checkerContainer = FullCheckerContainer();
+
+            Work work = new Work(display, checkerContainer);
 
             StartProgramm(work);
         }
@@ -91,5 +93,16 @@ namespace Эмуляция_контроля_качества
             }
         }
 
+        static CheckerContainer FullCheckerContainer()
+        {
+            CheckerContainer checkerContainer = new CheckerContainer();
+
+            checkerContainer.Register(new Bolt().GetType(), new BoltChecker());
+            checkerContainer.Register(new Nail().GetType(), new NailChecker());
+            checkerContainer.Register(new Screw().GetType(), new ScrewChecker());
+            checkerContainer.Register(new Wheel().GetType(), new WheelChecker());
+
+            return checkerContainer;
+        }
     }
 }

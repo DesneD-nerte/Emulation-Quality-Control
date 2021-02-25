@@ -10,6 +10,7 @@ namespace Эмуляция_контроля_качества.Classes
     {
         public bool IsWork { get; private set; } = false;
         CheckerContainer checkerContainer;
+        Conveyor conveyor = new Conveyor();
 
         public CheckMachine(CheckerContainer checkerContainer)
         {
@@ -23,6 +24,14 @@ namespace Эмуляция_контроля_качества.Classes
 
         public bool CheckDetail(IDetail detail)
         {
+            conveyor.PutDetailOn(detail);
+
+            do
+            {
+                conveyor.MoveDetails();
+            }
+            while (conveyor.CheckConveyor() == false);
+
             return checkerContainer.CheckDetail(detail);
         }
 
