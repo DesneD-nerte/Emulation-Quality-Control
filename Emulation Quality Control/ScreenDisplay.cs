@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Эмуляция_контроля_качества.Classes;
+using Emulation_Quality_Control.Classes;
 
-namespace Эмуляция_контроля_качества
+namespace Emulation_Quality_Control
 {
     class ScreenDisplay : IDisplay
     {

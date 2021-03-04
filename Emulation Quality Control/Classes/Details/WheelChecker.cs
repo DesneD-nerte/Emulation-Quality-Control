@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes.Details
+namespace Emulation_Quality_Control.Classes.Details
 {
-    class BoltChecker : IDetailChecker
+    class WheelChecker : IDetailChecker
     {
         Random rnd = new Random();
-
-        private readonly IDetail boltExample = new Bolt(0.5, 0.5, 3);
+        private readonly IDetail wheelExample = new Wheel(10, 4, 10);
 
         public bool CheckDetail(IDetail detail)
         {
-            if (detail.Height == boltExample.Height
-                || detail.Width == boltExample.Width
-                || detail.Length == boltExample.Length)
+            if (detail.Height == wheelExample.Height
+                || detail.Width == wheelExample.Width
+                || detail.Length == wheelExample.Length)
             {
                 return true;
             }
@@ -26,10 +25,10 @@ namespace Эмуляция_контроля_качества.Classes.Details
         {
             if (rnd.Next(10) == 5)//10% - процент брака
             {
-                return new Bolt(1, 1, 2);
+                return new Wheel(1, 1, 2);
             }
 
-            return new Bolt(0.5, 0.5, 3);
+            return new Wheel(10, 4, 10);
         }
     }
 }

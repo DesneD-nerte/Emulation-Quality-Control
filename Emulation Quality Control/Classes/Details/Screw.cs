@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
-    class Wheel : Detail
+    class Screw : Detail
     {
-        public Wheel(double height, double width, double length)
+        public Screw(double height, double width, double length)
         {
             this.Height = height;
             this.Width = width;
             this.Length = length;
         }
 
-        public Wheel()
+        public Screw()
         {
 
         }

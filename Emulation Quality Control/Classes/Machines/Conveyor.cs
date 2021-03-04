@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
     class Conveyor : IConveyor
     {
         Random rnd = new Random();
-        IDetail[] massiv = new IDetail[10];
+        public IDetail[] MassivOfDetails { get; set; } = new IDetail[10];
+
+        public int Length => MassivOfDetails.Length; 
+
         bool IsWork = false;
 
         public Conveyor()
@@ -17,11 +20,11 @@ namespace Эмуляция_контроля_качества.Classes
 
         public bool CheckPlacesOfConveyor()
         {
-            if(massiv[0] == null && massiv[1] != null && massiv[2] == null)
+            if(MassivOfDetails[0] == null && MassivOfDetails[1] != null && MassivOfDetails[2] == null)
             {
                 return true;
             }
-            if(massiv[0] != null || massiv[2] != null)
+            if(MassivOfDetails[0] != null || MassivOfDetails[2] != null)
             {
                 throw new ConveyorException("Вокруг требуемой позиции для проверки находятся препятствующие детали");
             }
@@ -31,22 +34,22 @@ namespace Эмуляция_контроля_качества.Classes
 
         public void PutDetailOn(IDetail detail)
         {
-            massiv[9] = detail;
+            MassivOfDetails[9] = detail;
         }
 
         public void MoveDetails()
         {
             if (TryBrokeConveyor() == false)
             {
-                for (int i = 0; i < massiv.Length - 1; i++)
+                for (int i = 0; i < MassivOfDetails.Length - 1; i++)
                 {
                     if (i % 2 == 1)//Перемещение по нечетным позициям
                     {
-                        massiv[i] = massiv[i + 2];
+                        MassivOfDetails[i] = MassivOfDetails[i + 2];
                     }
                 }
 
-                massiv[9] = null;
+                MassivOfDetails[9] = null;
             }
             else
             {
@@ -56,7 +59,7 @@ namespace Эмуляция_контроля_качества.Classes
 
         public IDetail GetCurrentDetail()
         {
-            return massiv[1];
+            return MassivOfDetails[1];
         }
 
         //Шанс поломки 0.01

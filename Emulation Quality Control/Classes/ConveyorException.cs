@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
     public class ConveyorException : Exception
     {

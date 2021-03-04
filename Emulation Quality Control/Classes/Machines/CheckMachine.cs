@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Эмуляция_контроля_качества.Classes.Details;
+using Emulation_Quality_Control.Classes.Details;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
     class CheckMachine : ICheckMachine
     {

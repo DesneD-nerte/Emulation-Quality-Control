@@ -6,7 +6,7 @@ using System.Text;
 namespace Tests
 {
     [TestClass]
-    class CheckerContainerTests
+    public class CheckerContainerTests
     {
         [TestMethod]
         public void TestMethod1()

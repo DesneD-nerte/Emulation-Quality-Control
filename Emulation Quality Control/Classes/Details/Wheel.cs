@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
-    class Nail : Detail
+    class Wheel : Detail
     {
-        public Nail(double height, double width, double length)
+        public Wheel(double height, double width, double length)
         {
             this.Height = height;
             this.Width = width;
             this.Length = length;
         }
 
-        public Nail()
+        public Wheel()
         {
 
         }

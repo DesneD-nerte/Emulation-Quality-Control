@@ -2,9 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
-using Эмуляция_контроля_качества.Classes.Details;
+using Emulation_Quality_Control.Classes.Details;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
     class CheckerContainer
     {

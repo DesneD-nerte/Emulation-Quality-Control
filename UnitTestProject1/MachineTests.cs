@@ -2,42 +2,56 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Эмуляция_контроля_качества.Classes;
-using Эмуляция_контроля_качества.Classes.Details;
+using Emulation_Quality_Control.Classes;
+using Emulation_Quality_Control.Classes.Details;
 
 namespace Tests
 {
     [TestClass]
-    class MachineTests
+    public class MachineTests
     {
         CheckerContainer checkerContainer = FullCheckerContainer();
 
         [TestMethod]
-        public void CreateDetailBoltTest()
+        public void GetDetailEqualOfTypesTest()
         {
             Bolt bolt = new Bolt();
-            Assert.AreEqual(bolt.GetType(), checkerContainer.CreateDetail(new Bolt()));
+            Assert.AreEqual(bolt.GetType(), checkerContainer.CreateDetail(new Bolt()).GetType());
+
+            Screw screw = new Screw();
+            Assert.AreEqual(screw.GetType(), checkerContainer.CreateDetail(new Screw()).GetType());
+
+            Nail nail = new Nail();
+            Assert.AreEqual(nail.GetType(), checkerContainer.CreateDetail(new Nail()).GetType());
+
+            Wheel wheel = new Wheel();
+            Assert.AreEqual(wheel.GetType(), checkerContainer.CreateDetail(new Wheel()).GetType());
         }
 
-
-        //private IDetail CreateDetail()
+        //[TestMethod]
+        //public void GetDetailEqualSizesTest()
         //{
-        //    IDetail bolt = new Bolt();
-        //    IDetail nail = new Nail();
-        //    IDetail screw = new Screw();
-        //    IDetail wheel = new Wheel();
+        //    Bolt bolt = new Bolt(0.5, 0.5, 3);
+        //    Assert.AreEqual(bolt.Height, checkerContainer.CreateDetail(new Bolt()).Height);
+        //    Assert.AreEqual(bolt.Width, checkerContainer.CreateDetail(new Bolt()).Width);
+        //    Assert.AreEqual(bolt.Length, checkerContainer.CreateDetail(new Bolt()).Length);
 
-        //    IDetail[] details = new IDetail[] { bolt, nail, screw, wheel };
+        //    //Screw screw = new Screw();
+        //    //Assert.AreEqual(screw.GetType(), checkerContainer.CreateDetail(new Screw()).GetType());
 
-        //    int index = rnd.Next(4);
+        //    //Nail nail = new Nail();
+        //    //Assert.AreEqual(nail.GetType(), checkerContainer.CreateDetail(new Nail()).GetType());
 
-        //    return checkerContainer.CreateDetail(details[index]);
+        //    //Wheel wheel = new Wheel();
+        //    //Assert.AreEqual(wheel.GetType(), checkerContainer.CreateDetail(new Wheel()).GetType());
         //}
 
         [TestMethod]
-        public void GetDetailTest()
+        public void GetNullDetailTest()
         {
-            
+            IDetail bolt = null;
+
+            Assert.ThrowsException<NullReferenceException>(() => checkerContainer.CreateDetail(bolt));
         }
 
         static CheckerContainer FullCheckerContainer()

@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes.Details
+namespace Emulation_Quality_Control.Classes.Details
 {
-    class ScrewChecker : IDetailChecker
+    class BoltChecker : IDetailChecker
     {
         Random rnd = new Random();
-        private readonly IDetail screwExample = new Screw(0.2, 0.3, 4);
+
+        private readonly IDetail boltExample = new Bolt(0.5, 0.5, 3);
 
         public bool CheckDetail(IDetail detail)
         {
-            if (detail.Height == screwExample.Height
-                || detail.Width == screwExample.Width
-                || detail.Length == screwExample.Length)
+            if (detail.Height == boltExample.Height
+                || detail.Width == boltExample.Width
+                || detail.Length == boltExample.Length)
             {
                 return true;
             }
@@ -25,10 +26,10 @@ namespace Эмуляция_контроля_качества.Classes.Details
         {
             if (rnd.Next(10) == 5)//10% - процент брака
             {
-                return new Screw(1, 1, 2);
+                return new Bolt(1, 1, 2);
             }
 
-            return new Screw(0.2, 0.3, 4);
+            return new Bolt(0.5, 0.5, 3);
         }
     }
 }

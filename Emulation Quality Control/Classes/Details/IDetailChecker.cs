@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Эмуляция_контроля_качества.Classes.Details
+namespace Emulation_Quality_Control.Classes.Details
 {
     interface IDetailChecker
     {

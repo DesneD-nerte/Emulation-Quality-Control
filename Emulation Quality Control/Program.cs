@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Эмуляция_контроля_качества.Classes;
-using Эмуляция_контроля_качества.Classes.Details;
+using Emulation_Quality_Control.Classes;
+using Emulation_Quality_Control.Classes.Details;
 
-namespace Эмуляция_контроля_качества
+namespace Emulation_Quality_Control
 {
     class Program
     {

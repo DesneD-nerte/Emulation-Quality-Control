@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 
-namespace Эмуляция_контроля_качества.Classes
+namespace Emulation_Quality_Control.Classes
 {
     class CooperateMachines
     {
@@ -29,7 +29,7 @@ namespace Эмуляция_контроля_качества.Classes
             {
                 IDetail detail = machine.GetDetail();
 
-                PutDetailOnConveyorAndMove1Step(detail);
+                PutDetailOnConveyorAndMoveOneStep(detail);
 
                 CheckConveyorAndDetail();
 
@@ -37,17 +37,12 @@ namespace Эмуляция_контроля_качества.Classes
             }
         }
 
-        private void PutDetailOnConveyorAndMove1Step(IDetail detail)
+        private void PutDetailOnConveyorAndMoveOneStep(IDetail detail)
         {
             try
             {
                 conveyor.PutDetailOn(detail);
                 conveyor.MoveDetails();
-
-                if (conveyor.CheckPlacesOfConveyor() == true)
-                {
-                    CheckDetail(conveyor.GetCurrentDetail());
-                }
             }
             catch(ConveyorException ex)
             {
