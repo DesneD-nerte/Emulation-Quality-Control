@@ -16,7 +16,7 @@ namespace Эмуляция_контроля_качества
 
             CheckerContainer checkerContainer = FullCheckerContainer();
 
-            Work work = new Work(display, checkerContainer);
+            CooperateMachines work = new CooperateMachines(display, checkerContainer);
 
             StartProgramm(work);
         }
@@ -26,7 +26,7 @@ namespace Эмуляция_контроля_качества
         /// Начало работы метода по выходу из программы происходит до начала прямой работы конвеера
         /// сделано для того, чтобы он не успел перехватить управление главным потоком
         /// </summary>
-        static void StartProgramm(Work work)
+        static void StartProgramm(CooperateMachines work)
         {
             Action<object> action = (object obj) =>
             {
@@ -35,62 +35,25 @@ namespace Эмуляция_контроля_качества
             Task stoppingTask = new Task(action, "Stopping");
             stoppingTask.Start();
 
-            //Запуск основного метода 
             StartWorking(work);
         }
 
 
-        static void StartWorking(Work work)
+        static void StartWorking(CooperateMachines work)
         {
             try
             {
                 work.StartWork();
             }
-            catch(MyException ex)
-            {
-                Console.WriteLine(ex.Message);
-
-                NextMoveAfterError(work);
-            }
-            catch(NullReferenceException ex)
-            {
-                Console.WriteLine(ex.Message);
-                
-                NextMoveAfterError(work);
-            }
             catch (Exception ex)
             {
-                Console.WriteLine("Unnexpected error:\n" + ex.Message);                
+                Console.WriteLine("Unnexpected error:\n" + ex.Message);
 
-                NextMoveAfterError(work);
+                ExitProgramm(work);
             }
         }
 
-
-        static void NextMoveAfterError(Work work)
-        {
-            Console.WriteLine("1 - Перезапустить\n" +
-                                  "2 - Закрыть");
-
-            string check;
-            do
-            {
-                check = Console.ReadLine();
-                if (check == "1")
-                {
-                    Console.Clear();
-                    StartWorking(work);
-                }
-                if (check == "2")
-                {
-                    Environment.Exit(0);
-                }
-            }
-            while (check != "1" || check != "2");
-        }
-
-
-        static void ExitProgramm(Work work)
+        static void ExitProgramm(CooperateMachines work)
         {
 
             while (true)

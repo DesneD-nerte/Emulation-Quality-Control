@@ -8,7 +8,7 @@ namespace Эмуляция_контроля_качества.Classes
 {
     class CheckMachine : ICheckMachine
     {
-        public bool IsWork { get; private set; } = false;
+        bool IsWork = false;
         CheckerContainer checkerContainer;
 
         public CheckMachine(CheckerContainer checkerContainer)
@@ -34,6 +34,16 @@ namespace Эмуляция_контроля_качества.Classes
         public void TurnOff()
         {
             IsWork = false;
+        }
+
+        public bool DoesCheckMachineWork()
+        {
+            if (IsWork == true)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Transit()

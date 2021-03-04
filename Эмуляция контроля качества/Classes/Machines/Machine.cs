@@ -9,7 +9,7 @@ namespace Эмуляция_контроля_качества.Classes
         Random rnd = new Random();
         
         public int Performance { get; }
-        public bool IsWork { get; private set; } = false;
+        bool IsWork = false;
 
         int indexOfDetail;
 
@@ -54,6 +54,16 @@ namespace Эмуляция_контроля_качества.Classes
         public void TurnOff()
         {
             IsWork = false;
+        }
+
+        public bool DoesMachineWork()
+        {
+            if (IsWork == true)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Stop()
