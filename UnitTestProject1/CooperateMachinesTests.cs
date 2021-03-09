@@ -16,30 +16,6 @@ namespace Tests
 
         CooperateMachines CM;
 
-        [TestMethod]
-        public void StartWorkTest()
-        {
-            CM = new CooperateMachines(new Mock<IDisplay>().Object, checkerContainer);
-        }
-
-
-
-        //public void StartWork()
-        //{
-        //    Ititialize();
-
-        //    while (AreMachinesWork() == true)
-        //    {
-        //        IDetail detail = machine.GetDetail();
-
-        //        PutDetailOnConveyorAndMove1Step(detail);
-
-        //        CheckConveyorAndDetail();
-
-        //        Thread.Sleep(1000);
-        //    }
-        //}
-
         static CheckerContainer FullCheckerContainer()
         {
             CheckerContainer checkerContainer = new CheckerContainer();

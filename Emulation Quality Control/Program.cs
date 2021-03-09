@@ -49,13 +49,12 @@ namespace Emulation_Quality_Control
             {
                 Console.WriteLine("Unnexpected error:\n" + ex.Message);
 
-                ExitProgramm(work);
+                Environment.Exit(0);
             }
         }
 
         static void ExitProgramm(CooperateMachines work)
         {
-
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);

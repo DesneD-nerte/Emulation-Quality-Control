@@ -7,9 +7,8 @@ namespace Emulation_Quality_Control.Classes
     interface IMachine
     {
         IDetail GetDetail();           // метод для запуска
-        int Performance { get; } // производительность станка
         bool DoesMachineWork();   // работает ли машина
-        void Stop();           // метод для остановки
+        void Stop();           
         void TurnOn();
         void TurnOff();
     }

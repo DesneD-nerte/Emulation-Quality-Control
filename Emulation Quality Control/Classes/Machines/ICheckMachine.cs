@@ -10,7 +10,5 @@ namespace Emulation_Quality_Control.Classes
         void TurnOn();
         void TurnOff();
         bool DoesCheckMachineWork();
-        void Transit();
-        void Utilize();
     }
 }

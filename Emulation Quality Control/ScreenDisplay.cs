@@ -16,5 +16,9 @@ namespace Emulation_Quality_Control
         {
             Console.WriteLine(message);
         }
+        public void Clear()
+        {
+            Console.Clear();
+        }
     }
 }

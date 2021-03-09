@@ -45,15 +45,5 @@ namespace Emulation_Quality_Control.Classes
 
             return false;
         }
-
-        public void Transit()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Utilize()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -8,5 +8,6 @@ namespace Emulation_Quality_Control.Classes
     {
         public void WriteLine(string message);
         public string ReadLine();
+        public void Clear();
     }
 }

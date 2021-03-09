@@ -47,30 +47,6 @@ namespace Tests
 
             Assert.IsFalse(conveyor.CheckPlacesOfConveyor());
         }
-        [TestMethod]
-        public void MoveDetails()
-        {
 
-        }
-
-        //public void MoveDetails()
-        //{
-        //    if (TryBrokeConveyor() == false)
-        //    {
-        //        for (int i = 0; i < massiv.Length - 1; i++)
-        //        {
-        //            if (i % 2 == 1)//Перемещение по нечетным позициям
-        //            {
-        //                massiv[i] = massiv[i + 2];
-        //            }
-        //        }
-
-        //        massiv[9] = null;
-        //    }
-        //    else
-        //    {
-        //        throw new ConveyorException("Неполадки с механизмом передвижения конвеера");
-        //    }
-        //}
     }
 }

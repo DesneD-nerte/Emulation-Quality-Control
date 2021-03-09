@@ -32,6 +32,52 @@ namespace Tests
             Assert.IsTrue(checkerContainer.CheckDetail(wheel));
         }
 
+        //100 попыток чтобы создать плохую деталь (при каждой попытке шанс 0.1 => ¬ итогевсегда создаетс€)
+        [TestMethod]
+        public void CheckDetailTrashTest()
+        {
+            IDetail bolt = new Bolt(1, 1, 2);
+            for (int i = 0; i < 100; i++)
+            {
+                if(checkerContainer.CheckDetail(bolt))
+                {
+                    Assert.IsTrue(checkerContainer.CheckDetail(bolt));
+                    break;
+                }
+            }
+
+            IDetail screw = new Screw(1, 1, 2);
+            for (int i = 0; i < 100; i++)
+            {
+                if (checkerContainer.CheckDetail(bolt))
+                {
+                    Assert.IsTrue(checkerContainer.CheckDetail(screw));
+                    break;
+                }
+            }
+
+            IDetail nail = new Nail(1, 1, 2);
+            for (int i = 0; i < 100; i++)
+            {
+                if (checkerContainer.CheckDetail(bolt))
+                {
+                    Assert.IsTrue(checkerContainer.CheckDetail(nail));
+                    break;
+                }
+            }
+            
+            IDetail wheel = new Wheel(1, 1, 2);
+            for (int i = 0; i < 100; i++)
+            {
+                if (checkerContainer.CheckDetail(bolt))
+                {
+                    Assert.IsTrue(checkerContainer.CheckDetail(wheel));
+                    break;
+                }
+            }
+            
+        }
+
 
         static CheckerContainer FullCheckerContainer()
         {

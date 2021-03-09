@@ -28,24 +28,6 @@ namespace Tests
             Assert.AreEqual(wheel.GetType(), checkerContainer.CreateDetail(new Wheel()).GetType());
         }
 
-        //[TestMethod]
-        //public void GetDetailEqualSizesTest()
-        //{
-        //    Bolt bolt = new Bolt(0.5, 0.5, 3);
-        //    Assert.AreEqual(bolt.Height, checkerContainer.CreateDetail(new Bolt()).Height);
-        //    Assert.AreEqual(bolt.Width, checkerContainer.CreateDetail(new Bolt()).Width);
-        //    Assert.AreEqual(bolt.Length, checkerContainer.CreateDetail(new Bolt()).Length);
-
-        //    //Screw screw = new Screw();
-        //    //Assert.AreEqual(screw.GetType(), checkerContainer.CreateDetail(new Screw()).GetType());
-
-        //    //Nail nail = new Nail();
-        //    //Assert.AreEqual(nail.GetType(), checkerContainer.CreateDetail(new Nail()).GetType());
-
-        //    //Wheel wheel = new Wheel();
-        //    //Assert.AreEqual(wheel.GetType(), checkerContainer.CreateDetail(new Wheel()).GetType());
-        //}
-
         [TestMethod]
         public void GetNullDetailTest()
         {

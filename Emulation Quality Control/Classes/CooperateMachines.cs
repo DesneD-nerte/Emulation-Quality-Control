@@ -27,6 +27,14 @@ namespace Emulation_Quality_Control.Classes
 
             while (AreMachinesWork() == true)
             {
+                OneStep();
+            }
+        }
+
+        private void OneStep()
+        {
+            try
+            {
                 IDetail detail = machine.GetDetail();
 
                 PutDetailOnConveyorAndMoveOneStep(detail);
@@ -35,15 +43,6 @@ namespace Emulation_Quality_Control.Classes
 
                 Thread.Sleep(1000);
             }
-        }
-
-        private void PutDetailOnConveyorAndMoveOneStep(IDetail detail)
-        {
-            try
-            {
-                conveyor.PutDetailOn(detail);
-                conveyor.MoveDetails();
-            }
             catch(ConveyorException ex)
             {
                 display.WriteLine(ex.Message);
@@ -51,19 +50,17 @@ namespace Emulation_Quality_Control.Classes
             }
         }
 
+        private void PutDetailOnConveyorAndMoveOneStep(IDetail detail)
+        {
+            conveyor.PutDetailOn(detail);
+            conveyor.MoveDetails();
+        }
+
         private void CheckConveyorAndDetail()
         {
-            try
+            if (conveyor.CheckPlacesOfConveyor() == true)
             {
-                if (conveyor.CheckPlacesOfConveyor() == true)
-                {
-                    CheckDetail(conveyor.GetCurrentDetail());
-                }
-            }
-            catch (ConveyorException ex)
-            {
-                display.WriteLine(ex.Message);
-                RestartOrCloseAfterError();
+                CheckDetail(conveyor.GetCurrentDetail());
             }
         }
 
@@ -108,10 +105,10 @@ namespace Emulation_Quality_Control.Classes
             string check;
             do
             {
-                check = Console.ReadLine();
+                check = display.ReadLine();
                 if (check == "1")
                 {
-                    Console.Clear();
+                    display.Clear();
                     StartWork();
                 }
                 if (check == "2")
@@ -125,7 +122,7 @@ namespace Emulation_Quality_Control.Classes
 
         private void Ititialize()
         {
-            machine = new Machine(1, checkerContainer);
+            machine = new Machine(checkerContainer);
             machine.TurnOn();
 
             checkMachine = new CheckMachine(checkerContainer);

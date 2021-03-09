@@ -8,20 +8,17 @@ namespace Emulation_Quality_Control.Classes
     {
         Random rnd = new Random();
         
-        public int Performance { get; }
         bool IsWork = false;
 
         int indexOfDetail;
 
         CheckerContainer checkerContainer;
 
-        public Machine (int performance, CheckerContainer checkerContainer)
+        public Machine (CheckerContainer checkerContainer)
         {
-            this.Performance = performance;
             this.checkerContainer = checkerContainer;
         }
 
-        //TODO:Cтоит как-то использовать "Performance", чтобы получать фигуру один раз в определенное время
         private IDetail CreateDetail()
         {
             IDetail bolt = new Bolt();
