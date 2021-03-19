@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Emulation_Quality_Control.Classes.Details;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Emulation_Quality_Control.Classes
 {
     class CheckMachine : ICheckMachine
     {
+        Random rnd = new Random();
+
         bool IsWork = false;
         CheckerContainer checkerContainer;
 
@@ -18,12 +22,20 @@ namespace Emulation_Quality_Control.Classes
 
         public CheckMachine()
         {
-            
+
         }
 
-        public bool CheckDetail(IDetail detail)
+        public Task<bool> CheckDetail(IDetail detail, CancellationToken token)
         {
-            return checkerContainer.CheckDetail(detail);
+            return Task.Run<bool>(async () =>
+            {
+                await Task.Delay(rnd.Next(1000));
+
+                token.ThrowIfCancellationRequested();
+
+                return checkerContainer.CheckDetail(detail);
+
+            }, token);
         }
 
         public void TurnOn()

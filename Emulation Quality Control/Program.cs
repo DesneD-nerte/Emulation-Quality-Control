@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Emulation_Quality_Control.Classes;
@@ -35,6 +36,13 @@ namespace Emulation_Quality_Control
             Task stoppingTask = new Task(action, "Stopping");
             stoppingTask.Start();
 
+            //Action<object> action1 = (object obj) =>
+            //{
+            //    IndicateProgrammWork();
+            //};
+            //Task showTask = new Task(action1, "Nothing");
+            //showTask.Start();
+
             StartWorking(work);
         }
 
@@ -65,6 +73,30 @@ namespace Emulation_Quality_Control
                     break;
                 }
             }
+        }
+
+        static async void IndicateProgrammWork()
+        {
+            while (true)
+            {
+                string s = "Programm is working .";
+                Console.Write("\r{0}", s);
+                await Task.Delay(100);
+
+                string s1 = "Programm is working ..";
+                Console.Write("\r{0}", s1);
+                await Task.Delay(100);
+
+                string s2 = "Programm is working ...";
+                Console.Write("\r{0}", s2);
+                await Task.Delay(100);
+            }
+        }
+
+        static void ClearLine(int line)
+        {
+            
+            Console.MoveBufferArea(0, line, Console.BufferWidth, 1, Console.BufferWidth, line, ' ', Console.ForegroundColor, Console.BackgroundColor);
         }
 
         static CheckerContainer FullCheckerContainer()

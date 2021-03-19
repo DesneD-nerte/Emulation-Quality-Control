@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Emulation_Quality_Control.Classes
 {
     class CooperateMachines
     {
+        Random rnd = new Random();
+
         ICheckMachine checkMachine;
+        ICheckMachine checkMachine1;
+        ICheckMachine checkMachine2;
+        ICheckMachine checkMachine3;
+
         IMachine machine;
         IConveyor conveyor;
 
@@ -41,7 +48,7 @@ namespace Emulation_Quality_Control.Classes
 
                 CheckConveyorAndDetail();
 
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
             }
             catch(ConveyorException ex)
             {
@@ -64,18 +71,84 @@ namespace Emulation_Quality_Control.Classes
             }
         }
 
-        private void CheckDetail(IDetail detail)
+        private async void CheckDetail(IDetail detail)
         {
-            bool checkedDetail = checkMachine.CheckDetail(detail);
+            Task<bool>[] taskResult = new Task<bool>[4];
 
-            if (checkedDetail == true)
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancellationTokenSource.Token;
+
+            Task<bool> task = checkMachine.CheckDetail(detail, token);
+
+            #region Время
+            //await Task.Run(() =>
+            //{
+            //    while (!task.IsCompleted)
+            //    {
+            //        if (task.IsCompleted)
+            //        {
+            //            stopwatch.Stop();
+            //        }
+            //    }
+            //});
+            #endregion
+            CancellationTokenSource cancellationTokenSource1 = new CancellationTokenSource();
+            CancellationToken token1 = cancellationTokenSource1.Token;
+
+            Task<bool> task1 = checkMachine1.CheckDetail(detail, token1);
+
+
+            CancellationTokenSource cancellationTokenSource2 = new CancellationTokenSource();
+            CancellationToken token2 = cancellationTokenSource2.Token;
+
+            Task<bool> task2 = checkMachine2.CheckDetail(detail, token2);
+
+
+            CancellationTokenSource cancellationTokenSource3 = new CancellationTokenSource();
+            CancellationToken token3 = cancellationTokenSource3.Token;
+            Task<bool> task3 = checkMachine3.CheckDetail(detail, token3);
+
+            await Task.WhenAny(task, task1, task2, task3);
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource1.Cancel();
+            cancellationTokenSource2.Cancel();
+            cancellationTokenSource3.Cancel();
+
+            await Task.Delay(1000);
+            //Console.WriteLine($"{task.IsCanceled}, {task1.IsCanceled}, {task2.IsCanceled}, {task3.IsCanceled}");
+
+            taskResult[0] = task;
+            taskResult[1] = task1;
+            taskResult[2] = task2;
+            taskResult[3] = task3;
+
+            int index = 1;
+            foreach(var oneTask in taskResult)
             {
-                display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is fine");
+                if(oneTask.IsCanceled == false)
+                {
+                    //checkDetail = oneTask.Result;
+                    if (oneTask.Result == true)
+                    {
+                        display.WriteLine($"The Machine №{index} checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
+                    }
+                    else
+                    {
+                        display.WriteLine($"The Machine №{index} checked {detail.GetType().Name} №{detail.NumberOfDetail} - trash");
+                    }
+                }
+
+                index++;
             }
-            else
-            {
-                display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is trash");
-            }
+
+            //if (checkDetail == true)
+            //{
+            //    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is fine");
+            //}
+            //else
+            //{
+            //    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is trash");
+            //}
         }
 
         private bool AreMachinesWork()
@@ -126,6 +199,9 @@ namespace Emulation_Quality_Control.Classes
             machine.TurnOn();
 
             checkMachine = new CheckMachine(checkerContainer);
+            checkMachine1 = new CheckMachine(checkerContainer);
+            checkMachine2 = new CheckMachine(checkerContainer);
+            checkMachine3 = new CheckMachine(checkerContainer);
             checkMachine.TurnOn();
 
             conveyor = new Conveyor();
