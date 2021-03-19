@@ -27,7 +27,15 @@ namespace Emulation_Quality_Control.Classes
 
         public bool CheckDetail(IDetail detail)
         {
-            return checkerContainer.CheckDetail(detail);
+            return Task.Run<bool>(async () =>
+            {
+                await Task.Delay(rnd.Next(750));
+
+                token.ThrowIfCancellationRequested();
+
+                return checkerContainer.CheckDetail(detail);
+
+            }, token);
         }
 
         public void TurnOn()
