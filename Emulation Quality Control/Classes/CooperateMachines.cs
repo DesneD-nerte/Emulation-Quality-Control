@@ -75,87 +75,27 @@ namespace Emulation_Quality_Control.Classes
             }
         }
 
-        private ConcurrentDictionary<Task<bool>, CancellationTokenSource> StartFourCheckMachines(IDetail detail)
-        {
-            #region Время
-            //await Task.Run(() =>
-            //{
-            //    while (!task.IsCompleted)
-            //    {
-            //        if (task.IsCompleted)
-            //        {
-            //            stopwatch.Stop();
-            //        }
-            //    }
-            //});
-            #endregion
-
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken token = cancellationTokenSource.Token;
-            Task<bool> task = checkMachine.CheckDetail(detail, token);
-
-            CancellationTokenSource cancellationTokenSource1 = new CancellationTokenSource();
-            CancellationToken token1 = cancellationTokenSource1.Token;
-            Task<bool> task1 = checkMachine1.CheckDetail(detail, token1);
-
-            CancellationTokenSource cancellationTokenSource2 = new CancellationTokenSource();
-            CancellationToken token2 = cancellationTokenSource2.Token;
-            Task<bool> task2 = checkMachine2.CheckDetail(detail, token2);
-
-            CancellationTokenSource cancellationTokenSource3 = new CancellationTokenSource();
-            CancellationToken token3 = cancellationTokenSource3.Token;
-            Task<bool> task3 = checkMachine3.CheckDetail(detail, token3);
-
-            ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary = new ConcurrentDictionary<Task<bool>, CancellationTokenSource>();
-            dictionary.TryAdd(task, cancellationTokenSource);
-            dictionary.TryAdd(task1, cancellationTokenSource1);
-            dictionary.TryAdd(task2, cancellationTokenSource2);
-            dictionary.TryAdd(task3, cancellationTokenSource3);
-
-            return dictionary;
-        }
-
         private void CheckDetail(IDetail detail)
         {
-            ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary =  StartFourCheckMachines(detail);
+            bool checkedDetail = checkMachine.CheckDetail(detail);
 
-            CheckAndCancelTasks(dictionary);
-
-            DisplayCheckedDetail(detail, dictionary);
-        }
-
-        private async void CheckAndCancelTasks(ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary)
-        {
-            await Task.WhenAny(dictionary.Keys);//Пока не будет проверена деталь какой - нибудь машиной
-
-            //Остановка всех задач, так как деталь уже была проверена
-            foreach (KeyValuePair<Task<bool>, CancellationTokenSource> keyValue in dictionary)
+            if (checkedDetail == true)
             {
-               keyValue.Value.Cancel();
+                display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is fine");
             }
-        }
-
-        private async void DisplayCheckedDetail(IDetail detail, ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary)
-        {
-            await Task.Delay(1000);//Без задержки не успевают выключиться задачи
-
-            int index = 1;
-            foreach (var oneTask in dictionary.Keys)
+            else
             {
-                if (oneTask.IsCompleted == true && oneTask.IsCanceled == false && oneTask.IsFaulted == false)
-                {
-                    if (oneTask.Result == true)
-                    {
-                        display.WriteLine($"The Machine №{index} checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
-                    }
-                    else
-                    {
-                        display.WriteLine($"The Machine №{index} checked {detail.GetType().Name} №{detail.NumberOfDetail} - trash");
-                    }
-                }
-
-                index++;
+                display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is trash");
             }
+
+            //if (checkDetail == true)
+            //{
+            //    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is fine");
+            //}
+            //else
+            //{
+            //    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is trash");
+            //}
         }
 
         private bool AreMachinesWork()

@@ -25,17 +25,9 @@ namespace Emulation_Quality_Control.Classes
 
         }
 
-        public Task<bool> CheckDetail(IDetail detail, CancellationToken token)
+        public bool CheckDetail(IDetail detail)
         {
-            return Task.Run<bool>(async () =>
-            {
-                await Task.Delay(rnd.Next(750));
-
-                token.ThrowIfCancellationRequested();
-
-                return checkerContainer.CheckDetail(detail);
-
-            }, token);
+            return checkerContainer.CheckDetail(detail);
         }
 
         public void TurnOn()
