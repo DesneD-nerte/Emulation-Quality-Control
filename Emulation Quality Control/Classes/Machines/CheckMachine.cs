@@ -29,7 +29,7 @@ namespace Emulation_Quality_Control.Classes
         {
             return Task.Run<bool>(async () =>
             {
-                await Task.Delay(rnd.Next(1000));
+                await Task.Delay(rnd.Next(750));
 
                 token.ThrowIfCancellationRequested();
 

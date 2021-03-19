@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -67,19 +68,15 @@ namespace Emulation_Quality_Control.Classes
         {
             if (conveyor.CheckPlacesOfConveyor() == true)
             {
-                CheckDetail(conveyor.GetCurrentDetail());
+                Task.Run(() =>
+               {
+                   CheckDetail(conveyor.GetCurrentDetail());
+               });
             }
         }
 
-        private async void CheckDetail(IDetail detail)
+        private ConcurrentDictionary<Task<bool>, CancellationTokenSource> StartFourCheckMachines(IDetail detail)
         {
-            Task<bool>[] taskResult = new Task<bool>[4];
-
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken token = cancellationTokenSource.Token;
-
-            Task<bool> task = checkMachine.CheckDetail(detail, token);
-
             #region Время
             //await Task.Run(() =>
             //{
@@ -92,42 +89,61 @@ namespace Emulation_Quality_Control.Classes
             //    }
             //});
             #endregion
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken token = cancellationTokenSource.Token;
+            Task<bool> task = checkMachine.CheckDetail(detail, token);
+
             CancellationTokenSource cancellationTokenSource1 = new CancellationTokenSource();
             CancellationToken token1 = cancellationTokenSource1.Token;
-
             Task<bool> task1 = checkMachine1.CheckDetail(detail, token1);
-
 
             CancellationTokenSource cancellationTokenSource2 = new CancellationTokenSource();
             CancellationToken token2 = cancellationTokenSource2.Token;
-
             Task<bool> task2 = checkMachine2.CheckDetail(detail, token2);
-
 
             CancellationTokenSource cancellationTokenSource3 = new CancellationTokenSource();
             CancellationToken token3 = cancellationTokenSource3.Token;
             Task<bool> task3 = checkMachine3.CheckDetail(detail, token3);
 
-            await Task.WhenAny(task, task1, task2, task3);
-            cancellationTokenSource.Cancel();
-            cancellationTokenSource1.Cancel();
-            cancellationTokenSource2.Cancel();
-            cancellationTokenSource3.Cancel();
+            ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary = new ConcurrentDictionary<Task<bool>, CancellationTokenSource>();
+            dictionary.TryAdd(task, cancellationTokenSource);
+            dictionary.TryAdd(task1, cancellationTokenSource1);
+            dictionary.TryAdd(task2, cancellationTokenSource2);
+            dictionary.TryAdd(task3, cancellationTokenSource3);
 
-            await Task.Delay(1000);
-            //Console.WriteLine($"{task.IsCanceled}, {task1.IsCanceled}, {task2.IsCanceled}, {task3.IsCanceled}");
+            return dictionary;
+        }
 
-            taskResult[0] = task;
-            taskResult[1] = task1;
-            taskResult[2] = task2;
-            taskResult[3] = task3;
+        private void CheckDetail(IDetail detail)
+        {
+            ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary =  StartFourCheckMachines(detail);
+
+            CheckAndCancelTasks(dictionary);
+
+            DisplayCheckedDetail(detail, dictionary);
+        }
+
+        private async void CheckAndCancelTasks(ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary)
+        {
+            await Task.WhenAny(dictionary.Keys);//Пока не будет проверена деталь какой - нибудь машиной
+
+            //Остановка всех задач, так как деталь уже была проверена
+            foreach (KeyValuePair<Task<bool>, CancellationTokenSource> keyValue in dictionary)
+            {
+               keyValue.Value.Cancel();
+            }
+        }
+
+        private async void DisplayCheckedDetail(IDetail detail, ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary)
+        {
+            await Task.Delay(1000);//Без задержки не успевают выключиться задачи
 
             int index = 1;
-            foreach(var oneTask in taskResult)
+            foreach (var oneTask in dictionary.Keys)
             {
-                if(oneTask.IsCanceled == false)
+                if (oneTask.IsCompleted == true && oneTask.IsCanceled == false && oneTask.IsFaulted == false)
                 {
-                    //checkDetail = oneTask.Result;
                     if (oneTask.Result == true)
                     {
                         display.WriteLine($"The Machine №{index} checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
@@ -140,15 +156,6 @@ namespace Emulation_Quality_Control.Classes
 
                 index++;
             }
-
-            //if (checkDetail == true)
-            //{
-            //    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is fine");
-            //}
-            //else
-            //{
-            //    display.WriteLine($"{detail.GetType().Name} №{detail.NumberOfDetail} is trash");
-            //}
         }
 
         private bool AreMachinesWork()

@@ -70,7 +70,7 @@ namespace Emulation_Quality_Control
                 if (key.Key == ConsoleKey.Escape || key.Key == ConsoleKey.Backspace)
                 {
                     work.EndWork();
-                    break;
+                    Environment.Exit(0);
                 }
             }
         }
