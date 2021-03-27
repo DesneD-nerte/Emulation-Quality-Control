@@ -85,7 +85,8 @@ namespace Emulation_Quality_Control.Classes
 
         private List<Task<bool>> StartFourCheckMachines(IDetail detail)
         {
-            cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource = new CancellationTokenSource();//Для нового набора задач нужен новый экземпляр, иначе 
+                                                                   //все новые задачи при запуске сразу отменяются
             CancellationToken token = cancellationTokenSource.Token;
 
             Task<bool> task = checkMachine.CheckDetail(detail, token);
