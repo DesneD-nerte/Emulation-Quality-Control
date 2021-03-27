@@ -25,7 +25,7 @@ namespace Emulation_Quality_Control.Classes
 
         }
 
-        public bool CheckDetail(IDetail detail)
+        public Task<bool> CheckDetail(IDetail detail, CancellationToken token)
         {
             return Task.Run<bool>(async () =>
             {

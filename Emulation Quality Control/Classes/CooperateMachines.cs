@@ -137,7 +137,7 @@ namespace Emulation_Quality_Control.Classes
 
         private async void DisplayCheckedDetail(IDetail detail, ConcurrentDictionary<Task<bool>, CancellationTokenSource> dictionary)
         {
-            await Task.Delay(1000);//Без задержки не успевают выключиться задачи
+            await Task.Delay(10000);//Без задержки не успевают выключиться задачи
 
             int index = 1;
             foreach (var oneTask in dictionary.Keys)
