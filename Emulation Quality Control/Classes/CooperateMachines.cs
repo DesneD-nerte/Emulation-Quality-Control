@@ -85,7 +85,7 @@ namespace Emulation_Quality_Control.Classes
 
         CancellationTokenSource cancellationTokenSource;
 
-        private (List<Task<bool>>, List<CheckMachine>) StartFourCheckMachines(IDetail detail)
+        private (List<Task<bool>>, List<ICheckMachine>) StartFourCheckMachines(IDetail detail)
         {
             cancellationTokenSource = new CancellationTokenSource();//Для нового набора задач нужен новый экземпляр, иначе 
                                                                     //все новые задачи при запуске сразу отменяются
@@ -107,15 +107,15 @@ namespace Emulation_Quality_Control.Classes
                 task3
             };
 
-            List<CheckMachine> listCurrentMachines = new List<CheckMachine>()
+            List<ICheckMachine> listCurrentCheckMachines = new List<ICheckMachine>()
             {
-                (CheckMachine)checkMachine,
-                (CheckMachine)checkMachine1,
-                (CheckMachine)checkMachine2,
-                (CheckMachine)checkMachine3,
+                checkMachine,
+                checkMachine1,
+                checkMachine2,
+                checkMachine3,
             };
 
-            (List<Task<bool>>, List<CheckMachine>) result = (list, listCurrentMachines);
+            (List<Task<bool>>, List<ICheckMachine>) result = (list, listCurrentCheckMachines);
 
             return result;
         }
@@ -124,14 +124,16 @@ namespace Emulation_Quality_Control.Classes
         {
             try
             {
-                var tasksAndTheirMachines = StartFourCheckMachines(detail);
+                var tasksAndMachines = StartFourCheckMachines(detail);
 
-                var listTasks = tasksAndTheirMachines.Item1;
-                var listCurrentMachines = tasksAndTheirMachines.Item2;
+                var listTasks = tasksAndMachines.Item1;
+                var listCurrentCheckMachines = tasksAndMachines.Item2;
 
-                bool taskResult = await CheckAndCancelTasks(listTasks, listCurrentMachines);
+                Task<bool> resultTask = await CheckAndCancelTasks(listTasks, listCurrentCheckMachines);
 
-                DisplayCheckedDetail(detail, taskResult, listCurrentMachines);
+                ICheckMachine currentCheckMachine = GetLastCurrentCheckMachine(resultTask, listTasks, listCurrentCheckMachines);
+
+                DisplayCheckedDetail(detail, resultTask, currentCheckMachine);
             }
             catch (AggregateException ex)
             {
@@ -142,39 +144,62 @@ namespace Emulation_Quality_Control.Classes
             }
         }
 
-        private async Task<bool> CheckAndCancelTasks(List<Task<bool>> listTasks, List<CheckMachine> listCurrentMachines)
+        private async Task<Task<bool>> CheckAndCancelTasks(List<Task<bool>> listTasks, List<ICheckMachine> listCurrentCheckMachines)
         {
             Task<bool> resultTask = await Task.WhenAny(listTasks);
 
+            resultTask = (Task<bool>)await CheckFaultedListTasks(resultTask, listTasks, listCurrentCheckMachines);
+
+            cancellationTokenSource.Cancel();
+
+            return resultTask;
+        }
+
+        ///По достижению последнего элемента (задачи) в списке, забираем его,
+        ///если он по итогу выполнится то будет выброс ошибки, потому что никто не смог проверить 
+        private async Task<Task> CheckFaultedListTasks(Task<bool> resultTask, List<Task<bool>> listTasks, List<ICheckMachine> listCurrentCheckMachines)
+        {
             while (resultTask.Status == TaskStatus.Faulted)
             {
                 if (listTasks.Count != 1)
                 {
-                    listCurrentMachines.RemoveAt(listTasks.FindIndex((x) => x == resultTask));
+                    listCurrentCheckMachines.RemoveAt(listTasks.FindIndex((x) => x == resultTask));
                     listTasks.Remove(resultTask);
 
                     resultTask = await Task.WhenAny(listTasks);
                 }
                 else
                 {
-                    return resultTask.Result;
+                    return resultTask;
                 }
             }
 
-            cancellationTokenSource.Cancel();
-
-            return resultTask.Result;
+            return resultTask;
         }
 
-        private void DisplayCheckedDetail(IDetail detail, bool taskResult, List<CheckMachine> lastCheckMachine)
+        //Оставляет один экземпляр проверочный машины, которая осуществила задачу по проверке детали быстрее всех
+        private ICheckMachine GetLastCurrentCheckMachine(Task<bool> resultTask, List<Task<bool>> listTasks, List<ICheckMachine> listCurrentCheckMachines)
         {
-            if (taskResult == true)
+            for (int i = 0; i < listTasks.Count; i++)
             {
-                display.WriteLine($"The CheckMachine \"{lastCheckMachine.FirstOrDefault().Model}\" checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
+                if (listTasks[i] == resultTask)
+                {
+                    return listCurrentCheckMachines[i];
+                }
+            }
+
+            throw new ArgumentException("List Check Machines is empty");
+        }
+
+        private void DisplayCheckedDetail(IDetail detail, Task<bool> taskResult, ICheckMachine currentCheckMachines)
+        {
+            if (taskResult.Result == true)
+            {
+                display.WriteLine($"The CheckMachine \"{currentCheckMachines.Model}\" checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
             }
             else
             {
-                display.WriteLine($"The CheckMachine \"{lastCheckMachine.FirstOrDefault().Model}\" checked {detail.GetType().Name} №{detail.NumberOfDetail} - trash");
+                display.WriteLine($"The CheckMachine \"{currentCheckMachines.Model}\" checked {detail.GetType().Name} №{detail.NumberOfDetail} - trash");
             }
         }
 
