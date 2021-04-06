@@ -7,15 +7,16 @@ namespace Emulation_Quality_Control.Classes
     class Machine : IMachine
     {
         Random rnd = new Random();
-        
+
         bool IsWork = false;
 
         int indexOfDetail;
-
+        public string Model { get; set; }
         CheckerContainer checkerContainer;
 
-        public Machine (CheckerContainer checkerContainer)
+        public Machine(string model, CheckerContainer checkerContainer)
         {
+            this.Model = model;
             this.checkerContainer = checkerContainer;
         }
 

@@ -7,11 +7,18 @@ namespace Emulation_Quality_Control.Classes
     class Conveyor : IConveyor
     {
         Random rnd = new Random();
+
+        public string Model { get; set; }
         public IDetail[] MassivOfDetails { get; set; } = new IDetail[10];
 
-        public int Length => MassivOfDetails.Length; 
+        public int Length => MassivOfDetails.Length;
 
         bool IsWork = false;
+
+        public Conveyor(string model)
+        {
+            this.Model = model;
+        }
 
         public Conveyor()
         {
@@ -20,13 +27,13 @@ namespace Emulation_Quality_Control.Classes
 
         public bool CheckPlacesOfConveyor()
         {
-            if(MassivOfDetails[0] == null && MassivOfDetails[1] != null && MassivOfDetails[2] == null)
+            if (MassivOfDetails[0] == null && MassivOfDetails[1] != null && MassivOfDetails[2] == null)
             {
                 return true;
             }
-            if(MassivOfDetails[0] != null || MassivOfDetails[2] != null)
+            if (MassivOfDetails[0] != null || MassivOfDetails[2] != null)
             {
-                throw new ConveyorException("Вокруг требуемой позиции для проверки находятся препятствующие детали");
+                throw new ConveyorException("There are a few details near a check place");
             }
 
             return false;
@@ -53,7 +60,7 @@ namespace Emulation_Quality_Control.Classes
             }
             else
             {
-                throw new ConveyorException("Неполадки с механизмом передвижения конвеера");
+                throw new ConveyorException("There are some troubles with the conveyor movement mechanism");
             }
         }
 
@@ -65,7 +72,7 @@ namespace Emulation_Quality_Control.Classes
         //Шанс поломки 0.01
         private bool TryBrokeConveyor()
         {
-            if(rnd.Next(0,99) == 50)
+            if (rnd.Next(0, 99) == 50)
             {
                 IsWork = false;
                 return true;
