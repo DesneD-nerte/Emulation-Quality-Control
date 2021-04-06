@@ -13,10 +13,13 @@ namespace Emulation_Quality_Control.Classes
         Random rnd = new Random();
 
         bool IsWork = false;
+
+        public string Model { get; set; }
         CheckerContainer checkerContainer;
 
-        public CheckMachine(CheckerContainer checkerContainer)
+        public CheckMachine(string model, CheckerContainer checkerContainer)
         {
+            this.Model = model;
             this.checkerContainer = checkerContainer;
         }
 
@@ -27,15 +30,54 @@ namespace Emulation_Quality_Control.Classes
 
         public Task<bool> CheckDetail(IDetail detail, CancellationToken token)
         {
+            //Task<bool> oneCheck = new Task<bool>(() =>
+            //{
+            //    if (TryBrokeCheckMachine() == false)
+            //    {
+            //        token.ThrowIfCancellationRequested();
+
+            //        return checkerContainer.CheckDetail(detail);
+            //    }
+            //    else
+            //    {
+            //        throw new CheckMachineException("Ошибка работы проверяющей машины");
+            //    }
+            //}, token);
+
+            //return oneCheck;
+
             return Task.Run<bool>(async () =>
             {
-                await Task.Delay(rnd.Next(750));
+                if (TryBrokeCheckMachine() == false)
+                {
+                    await Task.Delay(rnd.Next(750));
 
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
 
-                return checkerContainer.CheckDetail(detail);
-
+                    return checkerContainer.CheckDetail(detail);
+                }
+                else
+                {
+                    throw new CheckMachineException("All machines could not examine the detail. It was eliminated");
+                }
             }, token);
+            //if (love programming ())
+            //{
+            //    SayMyau('chikiryau');
+            //}
+            //throw new CheckMachineException("Ошибка работы проверяющей машины");
+        }
+
+        private bool TryBrokeCheckMachine()
+        {
+            if (rnd.Next(0, 2) == 1)
+            {
+                //IsWork = false;
+                return true;
+            }
+
+            //IsWork = true;
+            return false;
         }
 
         public void TurnOn()

@@ -33,15 +33,8 @@ namespace Emulation_Quality_Control
             {
                 ExitProgramm(work);
             };
-            Task stoppingTask = new Task(action, "Stopping");
-            stoppingTask.Start();
 
-            //Action<object> action1 = (object obj) =>
-            //{
-            //    IndicateProgrammWork();
-            //};
-            //Task showTask = new Task(action1, "Nothing");
-            //showTask.Start();
+            Task stoppingTask = Task.Factory.StartNew(action, "Stopping");
 
             StartWorking(work);
         }
@@ -73,30 +66,6 @@ namespace Emulation_Quality_Control
                     Environment.Exit(0);
                 }
             }
-        }
-
-        static async void IndicateProgrammWork()
-        {
-            while (true)
-            {
-                string s = "Programm is working .";
-                Console.Write("\r{0}", s);
-                await Task.Delay(100);
-
-                string s1 = "Programm is working ..";
-                Console.Write("\r{0}", s1);
-                await Task.Delay(100);
-
-                string s2 = "Programm is working ...";
-                Console.Write("\r{0}", s2);
-                await Task.Delay(100);
-            }
-        }
-
-        static void ClearLine(int line)
-        {
-            
-            Console.MoveBufferArea(0, line, Console.BufferWidth, 1, Console.BufferWidth, line, ' ', Console.ForegroundColor, Console.BackgroundColor);
         }
 
         static CheckerContainer FullCheckerContainer()

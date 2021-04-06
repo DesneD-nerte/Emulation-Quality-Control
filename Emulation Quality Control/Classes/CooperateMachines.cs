@@ -18,6 +18,8 @@ namespace Emulation_Quality_Control.Classes
         ICheckMachine checkMachine2;
         ICheckMachine checkMachine3;
 
+        List<ICheckMachine> listCheckMachines;
+
         IMachine machine;
         IConveyor conveyor;
 
@@ -60,6 +62,7 @@ namespace Emulation_Quality_Control.Classes
             catch (CheckMachineException ex)
             {
                 display.WriteLine(ex.Message);
+                RestartOrCloseAfterError();
             }
         }
 
@@ -80,13 +83,12 @@ namespace Emulation_Quality_Control.Classes
             }
         }
 
-
         CancellationTokenSource cancellationTokenSource;
 
-        private List<Task<bool>> StartFourCheckMachines(IDetail detail)
+        private (List<Task<bool>>, List<CheckMachine>) StartFourCheckMachines(IDetail detail)
         {
             cancellationTokenSource = new CancellationTokenSource();//Для нового набора задач нужен новый экземпляр, иначе 
-                                                                   //все новые задачи при запуске сразу отменяются
+                                                                    //все новые задачи при запуске сразу отменяются
             CancellationToken token = cancellationTokenSource.Token;
 
             Task<bool> task = checkMachine.CheckDetail(detail, token);
@@ -105,66 +107,84 @@ namespace Emulation_Quality_Control.Classes
                 task3
             };
 
-            return list;
+            List<CheckMachine> listMachines = new List<CheckMachine>()
+            {
+                (CheckMachine)checkMachine,
+                (CheckMachine)checkMachine1,
+                (CheckMachine)checkMachine2,
+                (CheckMachine)checkMachine3,
+            };
+
+            (List<Task<bool>>, List<CheckMachine>) result = (list, listMachines);
+
+            return result;
+            //return list;
         }
 
         private async void CheckDetail(IDetail detail)
         {
-            var listTasks = StartFourCheckMachines(detail);
+            try
+            {
+                var tasksAndTheirMachines = StartFourCheckMachines(detail);
 
-            bool taskResult = await CheckAndCancelTasks(listTasks);
+                var listTasks = tasksAndTheirMachines.Item1;
+                var listMachines = tasksAndTheirMachines.Item2;
 
-            DisplayCheckedDetail(detail, taskResult, listTasks);
+                bool taskResult = await CheckAndCancelTasks(listTasks, listMachines);
+
+                DisplayCheckedDetail(detail, taskResult, listMachines);
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var oneException in ex.InnerExceptions)
+                {
+                    display.WriteLine(oneException.Message);
+                }
+            }
         }
 
-        private async Task<bool> CheckAndCancelTasks(List<Task<bool>> listTasks)
+        private async Task<bool> CheckAndCancelTasks(List<Task<bool>> listTasks, List<CheckMachine> listMachines)
         {
-            Task<bool> resultTask = await Task.WhenAny(listTasks);//Пока не будет проверена деталь какой - нибудь машиной
+            //listTasks.ForEach((x) => x.Start());
 
-            //Остановка всех задач, так как деталь уже была проверена
+            Task<bool> resultTask = await Task.WhenAny(listTasks);
+
+            while (resultTask.Status == TaskStatus.Faulted)
+            {
+                if (listTasks.Count != 1)
+                {
+                    listMachines.RemoveAt(listTasks.FindIndex((x) => x == resultTask));
+                    listTasks.Remove(resultTask);
+
+                    resultTask = await Task.WhenAny(listTasks);
+                }
+                else
+                {
+                    return resultTask.Result;
+                }
+            }
+
             cancellationTokenSource.Cancel();
 
             return resultTask.Result;
         }
 
-        private async void DisplayCheckedDetail(IDetail detail, bool taskResult, List<Task<bool>> listTasks)
+        private void DisplayCheckedDetail(IDetail detail, bool taskResult, List<CheckMachine> machine)
         {
-            //await Task.Delay(5000);//Без задержки не успевают выключиться задачи
-
-            int indexOfMachine = GetIdOfMachineFromTasks(listTasks);
-
             if (taskResult == true)
             {
-                display.WriteLine($"The Machine №{indexOfMachine} checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
+                display.WriteLine($"The CheckMachine \"{machine.FirstOrDefault().Model}\" checked {detail.GetType().Name} №{detail.NumberOfDetail} - fine");
             }
             else
             {
-                display.WriteLine($"The Machine №{indexOfMachine} checked {detail.GetType().Name} №{detail.NumberOfDetail} - trash");
+                display.WriteLine($"The CheckMachine \"{machine.FirstOrDefault().Model}\" checked {detail.GetType().Name} №{detail.NumberOfDetail} - trash");
             }
-        }
-
-        private int GetIdOfMachineFromTasks(List<Task<bool>> listTasks)
-        {
-            for (int i = 0; i < listTasks.Count; i++)
-            {
-                if (listTasks[i].Status == TaskStatus.RanToCompletion)
-                {
-                    return i + 1;
-                }
-            }
-
-            throw new CheckMachineException("All Tasks Are Cancelled");
-
-            //int idOfMachine = from x in listTasks
-            //         where x.Status == TaskStatus.RanToCompletion
-            //         select x;
-            //return idOfMachine;
         }
 
         private bool AreMachinesWork()
         {
             if (machine.DoesMachineWork()
-               && checkMachine.DoesCheckMachineWork() == true
+               && listCheckMachines.All((x) => x.DoesCheckMachineWork())
                && conveyor.DoesConveyorWork() == true)
             {
                 return true;
@@ -182,8 +202,8 @@ namespace Emulation_Quality_Control.Classes
 
         private void RestartOrCloseAfterError()
         {
-            display.WriteLine("1 - Перезапустить\n" +
-                                  "2 - Закрыть");
+            display.WriteLine("1 - Restart\n" +
+                                  "2 - Close");
 
             string check;
             do
@@ -205,16 +225,21 @@ namespace Emulation_Quality_Control.Classes
 
         private void Ititialize()
         {
-            machine = new Machine(checkerContainer);
+            machine = new Machine("LifeLand", checkerContainer);
             machine.TurnOn();
 
-            checkMachine = new CheckMachine(checkerContainer);
-            checkMachine1 = new CheckMachine(checkerContainer);
-            checkMachine2 = new CheckMachine(checkerContainer);
-            checkMachine3 = new CheckMachine(checkerContainer);
+            checkMachine = new CheckMachine("Raven", checkerContainer);
+            checkMachine1 = new CheckMachine("Cycle", checkerContainer);
+            checkMachine2 = new CheckMachine("Eagle", checkerContainer);
+            checkMachine3 = new CheckMachine("ZLD", checkerContainer);
             checkMachine.TurnOn();
+            checkMachine1.TurnOn();
+            checkMachine2.TurnOn();
+            checkMachine3.TurnOn();
 
-            conveyor = new Conveyor();
+            listCheckMachines = new List<ICheckMachine>() { checkMachine, checkMachine1, checkMachine2, checkMachine3 };
+
+            conveyor = new Conveyor("StarField");
             conveyor.TurnOn();
         }
     }
