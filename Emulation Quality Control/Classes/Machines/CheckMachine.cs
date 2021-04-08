@@ -30,22 +30,6 @@ namespace Emulation_Quality_Control.Classes
 
         public Task<bool> CheckDetail(IDetail detail, CancellationToken token)
         {
-            //Task<bool> oneCheck = new Task<bool>(() =>
-            //{
-            //    if (TryBrokeCheckMachine() == false)
-            //    {
-            //        token.ThrowIfCancellationRequested();
-
-            //        return checkerContainer.CheckDetail(detail);
-            //    }
-            //    else
-            //    {
-            //        throw new CheckMachineException("Ошибка работы проверяющей машины");
-            //    }
-            //}, token);
-
-            //return oneCheck;
-
             return Task.Run<bool>(async () =>
             {
                 if (TryBrokeCheckMachine() == false)

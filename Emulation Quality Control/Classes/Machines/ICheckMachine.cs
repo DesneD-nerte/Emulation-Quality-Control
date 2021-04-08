@@ -8,7 +8,7 @@ namespace Emulation_Quality_Control.Classes
 {
     interface ICheckMachine
     {
-        string Model { get; set; }
+        string Model { get;}
         Task<bool> CheckDetail(IDetail detail, CancellationToken token);
         void TurnOn();
         void TurnOff();

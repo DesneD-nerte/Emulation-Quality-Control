@@ -6,6 +6,7 @@ namespace Emulation_Quality_Control.Classes
 {
     interface IConveyor
     {
+        string Model { get; }
         public bool CheckPlacesOfConveyor();
         public void PutDetailOn(IDetail detail);
         public void MoveDetails();

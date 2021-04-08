@@ -148,7 +148,7 @@ namespace Emulation_Quality_Control.Classes
         {
             Task<bool> resultTask = await Task.WhenAny(listTasks);
 
-            resultTask = (Task<bool>)await CheckFaultedListTasks(resultTask, listTasks, listCurrentCheckMachines);
+            resultTask = await CheckFaultedListTasks(resultTask, listTasks, listCurrentCheckMachines);
 
             cancellationTokenSource.Cancel();
 
@@ -157,7 +157,7 @@ namespace Emulation_Quality_Control.Classes
 
         ///По достижению последнего элемента (задачи) в списке, забираем его,
         ///если он по итогу выполнится то будет выброс ошибки, потому что никто не смог проверить 
-        private async Task<Task> CheckFaultedListTasks(Task<bool> resultTask, List<Task<bool>> listTasks, List<ICheckMachine> listCurrentCheckMachines)
+        private async Task<Task<bool>> CheckFaultedListTasks(Task<bool> resultTask, List<Task<bool>> listTasks, List<ICheckMachine> listCurrentCheckMachines)
         {
             while (resultTask.Status == TaskStatus.Faulted)
             {
